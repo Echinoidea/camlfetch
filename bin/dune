@@ -1,4 +1,4 @@
 (executable
  (public_name camlfetch)
  (name main)
- (libraries camlfetch unix))
+ (libraries camlfetch unix sexplib))

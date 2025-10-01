@@ -1,2 +1,5 @@
 (library
- (name camlfetch))
+ (name camlfetch)
+ (libraries sexplib unix)
+ (preprocess
+  (pps ppx_sexp_conv)))
