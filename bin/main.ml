@@ -95,9 +95,31 @@ let get_uptime () =
     (hours, minutes, seconds)
   with Sys_error _ | End_of_file | Failure _ -> (0, 0, 0)
 
-let () =
+let read_art file =
+  let content = In_channel.with_open_bin file In_channel.input_all in
+  String.split_on_char '\n' content
+  |> List.filter (fun line -> String.trim line <> "")
+
+let _print_art lines = List.iter (fun line -> Printf.printf "%s\n" line) lines
+
+(* Find the shortest length and pad it with \n to match the length of the longer *)
+let pad_lines l1 l2 =
+  let diff = abs (List.length l1 - List.length l2) in
+  match List.length l1 - List.length l2 with
+  | 0 ->
+      (l1, l2)
+  | n when n > 0 ->
+      (l1, l2 @ List.init diff (fun _ -> " "))
+  | _ ->
+      (l1 @ List.init diff (fun _ -> " "), l2)
+
+let print_concat_art_sysinfo art_lines sysinfo_lines =
+  let l1, l2 = pad_lines art_lines sysinfo_lines in
+  List.iter2 (fun s1 s2 -> Printf.printf "%s\t\t%s\n" s1 s2) l1 l2
+
+let sysinfo_s =
   let hours, minutes, _seconds = get_uptime () in
-  Printf.printf
+  Printf.sprintf
     "    \t%s\n\
      MEM\t%d / %d\n\
      CPU\t%f\n\
@@ -108,3 +130,7 @@ let () =
     (mem_free |> get_mem_value |> kb_string_to_mb)
     (mem_total |> get_mem_value |> kb_string_to_mb)
     cpu_usage (get_pacman_count ()) (get_shell ()) hours minutes
+
+let art = read_art "/home/gabriel/.local/share/fastfetch/ascii/arch.txt"
+
+let () = print_concat_art_sysinfo art (String.split_on_char '\n' sysinfo_s)
