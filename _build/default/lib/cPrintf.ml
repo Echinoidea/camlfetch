@@ -30,6 +30,15 @@ let bright_cyan = "\027[96m"
 
 let bright_white = "\027[97m"
 
+let colors =
+  [ ("red", red)
+  ; ("green", green)
+  ; ("yellow", yellow)
+  ; ("blue", blue)
+  ; ("magenta", magenta)
+  ; ("cyan", cyan)
+  ; ("white", white) ]
+
 let reset = "\027[0m"
 
 let cprintf color fmt =

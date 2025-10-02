@@ -8,9 +8,18 @@ let sysinfo_s =
     (Mem.mem_free |> Mem.get_mem_value |> Util.kb_string_to_mb)
     (Mem.mem_total |> Mem.get_mem_value |> Util.kb_string_to_mb)
     Cpu.cpu_usage (Packages.pacman_count ()) (Shell.get_shell ()) hours minutes
-    (Palette.palette "R")
+    (Palette.palette "*")
 
 let art = Ascii.read_art "/home/gabriel/.local/share/fastfetch/ascii/arch.txt"
 
+let conf =
+  match Config.load_from_file "/home/gabriel/.config/camlfetch.sexp" with
+  | Ok cfg ->
+      cfg
+  | Error _ ->
+      Config.default
+
 let () =
-  Ascii.print_concat_art_sysinfo art (String.split_on_char '\n' sysinfo_s)
+  Ascii.print_concat_art_sysinfo art conf.ascii_art_color
+    (String.split_on_char '\n' sysinfo_s)
+    conf.sysinfo_color

@@ -16,7 +16,9 @@ type t =
   ; show_disk: bool
   ; cpu_usage: bool
   ; memory_percentage: bool
-  ; ascii_art: string }
+  ; ascii_art: string
+  ; ascii_art_color: string
+  ; sysinfo_color: string }
 [@@deriving sexp]
 
 (* Default configuration *)
@@ -36,7 +38,9 @@ let default =
   ; show_disk= true
   ; cpu_usage= false
   ; memory_percentage= false
-  ; ascii_art= "auto" }
+  ; ascii_art= "auto"
+  ; ascii_art_color= "blue"
+  ; sysinfo_color= "white" }
 
 (* Load config from file *)
 let load_from_file filename =

@@ -16,11 +16,14 @@ let pad_lines l1 l2 =
   | _ ->
       (l1 @ List.init diff (fun _ -> ""), l2)
 
-let print_concat_art_sysinfo art_lines sysinfo_lines =
+let print_concat_art_sysinfo art_lines art_color_name sysinfo_lines
+    sysinfo_color_name =
+  let art_color = Util.get_color art_color_name in
+  let sysinfo_color = Util.get_color sysinfo_color_name in
   let l1, l2 = pad_lines art_lines sysinfo_lines in
   List.iter2
     (fun s1 s2 ->
-      let colored_s1 = CPrintf.csprintf CPrintf.cyan "%s" s1 in
-      let colored_s2 = CPrintf.csprintf CPrintf.bright_white "%s" s2 in
+      let colored_s1 = CPrintf.csprintf art_color "%s" s1 in
+      let colored_s2 = CPrintf.csprintf sysinfo_color "%s" s2 in
       Printf.printf "%-30s%s\n" colored_s1 colored_s2 )
     l1 l2

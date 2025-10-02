@@ -12,5 +12,14 @@ let sysinfo_s =
 
 let art = Ascii.read_art "/home/gabriel/.local/share/fastfetch/ascii/arch.txt"
 
+let conf =
+  match Config.load_from_file "/home/gabriel/.config/camlfetch.sexp" with
+  | Ok cfg ->
+      cfg
+  | Error _ ->
+      Config.default
+
 let () =
-  Ascii.print_concat_art_sysinfo art (String.split_on_char '\n' sysinfo_s)
+  Ascii.print_concat_art_sysinfo art conf.ascii_art_color
+    (String.split_on_char '\n' sysinfo_s)
+    conf.sysinfo_color
