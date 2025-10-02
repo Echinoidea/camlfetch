@@ -1,4 +1,4 @@
-let get_pacman_count () =
+let pacman_count () =
   let ic = Unix.open_process_in "pacman -Q" in
   let rec count_lines acc =
     try

@@ -3,6 +3,9 @@
 (** @canonical Camlfetch.Ascii *)
 module Ascii = Camlfetch__Ascii
 
+(** @canonical Camlfetch.CPrintf *)
+module CPrintf = Camlfetch__CPrintf
+
 (** @canonical Camlfetch.Config *)
 module Config = Camlfetch__Config
 

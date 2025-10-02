@@ -12,9 +12,7 @@ let sysinfo_s =
     Distro.distro_name
     (Mem.mem_free |> Mem.get_mem_value |> Util.kb_string_to_mb)
     (Mem.mem_total |> Mem.get_mem_value |> Util.kb_string_to_mb)
-    Cpu.cpu_usage
-    (Packages.get_pacman_count ())
-    (Shell.get_shell ()) hours minutes
+    Cpu.cpu_usage (Packages.pacman_count ()) (Shell.get_shell ()) hours minutes
 
 let art = Ascii.read_art "/home/gabriel/.local/share/fastfetch/ascii/arch.txt"
 

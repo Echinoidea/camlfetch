@@ -18,4 +18,9 @@ let pad_lines l1 l2 =
 
 let print_concat_art_sysinfo art_lines sysinfo_lines =
   let l1, l2 = pad_lines art_lines sysinfo_lines in
-  List.iter2 (fun s1 s2 -> Printf.printf "%-30s%s\n" s1 s2) l1 l2
+  List.iter2
+    (fun s1 s2 ->
+      let colored_s1 = CPrintf.csprintf CPrintf.cyan "%s" s1 in
+      let colored_s2 = CPrintf.csprintf CPrintf.bright_white "%s" s2 in
+      Printf.printf "%-30s%s\n" colored_s1 colored_s2 )
+    l1 l2
