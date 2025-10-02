@@ -1,1 +1,1 @@
-lib/palette.pp.ml:
+lib/palette.pp.ml: CPrintf List String
