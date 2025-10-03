@@ -25,5 +25,5 @@ let print_concat_art_sysinfo art_lines art_color_name sysinfo_lines
     (fun s1 s2 ->
       let colored_s1 = CPrintf.csprintf art_color "%s" s1 in
       let colored_s2 = CPrintf.csprintf sysinfo_color "%s" s2 in
-      Printf.printf "%-30s%s\n" colored_s1 colored_s2 )
+      Printf.printf "%-30s  %s\n" colored_s1 colored_s2 )
     l1 l2
