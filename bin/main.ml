@@ -1,7 +1,5 @@
 open Camlfetch
 
-let art = Ascii.read_art "/home/gabriel/.local/share/fastfetch/ascii/arch.txt"
-
 let conf =
   match
     Config.load_from_file "/home/gabriel/.config/camlfetch/camlfetch.sexp"
@@ -16,6 +14,14 @@ let conf =
       Printf.eprintf "Warning: Could not parse config file: %s\n%!" msg ;
       Printf.eprintf "Using default configuration\n%!" ;
       Config.default
+
+let art =
+  Ascii.read_art
+    ( match conf.ascii_art with
+    | "auto" ->
+        "/home/gabriel/.local/share/fastfetch/ascii/arch.txt"
+    | path ->
+        path )
 
 (*function that takes a bool from conf, a field title, a field v
 all potential fields, and only return a string with content if cfg_includes *)
