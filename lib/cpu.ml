@@ -14,7 +14,7 @@ let calculate_cpu_usage times1 times2 =
   let idle_delta = idle2 - idle1 in
   100.0 *. (float_of_int (total_delta - idle_delta) /. float_of_int total_delta)
 
-let cpu_usage =
+let cpu_usage () =
   let times1 = read_cpu_vals () in
   Unix.sleepf 0.5 ;
   let times2 = read_cpu_vals () in

@@ -46,7 +46,6 @@ let default =
   ; ascii_art_color= "blue"
   ; sysinfo_color= "white" }
 
-(* Load config from file *)
 let load_from_file filename =
   try
     let sexp = Sexplib.Sexp.load_sexp filename in

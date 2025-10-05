@@ -7,7 +7,6 @@ let conf =
     Config.load_from_file "/home/gabriel/.config/camlfetch/camlfetch.sexp"
   with
   | Ok cfg ->
-      Printf.eprintf "Loaded config from file\n%!" ;
       cfg
   | Error (`File_error msg) ->
       Printf.eprintf "Warning: Could not read config file: %s\n%!" msg ;
@@ -18,28 +17,32 @@ let conf =
       Printf.eprintf "Using default configuration\n%!" ;
       Config.default
 
-(*I want a function that takes a bool from conf, a field title, a field v
+(*function that takes a bool from conf, a field title, a field v
 all potential fields, and only return a string with content if cfg_includes *)
-let field cfg_includes formatted_string =
-  if cfg_includes then formatted_string else ""
+let field cfg_includes lazy_formatted_string =
+  if cfg_includes then lazy_formatted_string () else ""
 
 let hours, minutes, _seconds = Uptime.get_uptime ()
 
 let fields =
-  [ field conf.show_memory
-      (Printf.sprintf "MEM\t%d / %d MB"
-         (Mem.mem_free |> Mem.get_mem_value |> Util.kb_string_to_mb)
-         (Mem.mem_total |> Mem.get_mem_value |> Util.kb_string_to_mb) )
-  ; field conf.show_cpu
-      (Printf.sprintf "CPU\t%d%%" (int_of_float Cpu.cpu_usage))
-  ; field conf.show_disk
-      (Printf.sprintf "DISK\t%d/%d GB" Disk.disk_used Disk.disk_total)
-  ; field conf.show_packages
-      (Printf.sprintf "PACMAN\t%d" (Packages.pacman_count ()))
-  ; field conf.show_shell (Printf.sprintf "SHELL\t%s" (Shell.get_shell ()))
-  ; field conf.show_uptime (Printf.sprintf "UPTIME\t%d:%d" hours minutes)
-  ; field conf.show_ocaml (Printf.sprintf "OCAML\t%s" Ocaml.ocaml_version)
-  ; field conf.show_palette (Printf.sprintf "%s" (Palette.palette "*")) ]
+  [ field conf.show_memory (fun () ->
+        Printf.sprintf "MEM\t%d / %d MB"
+          (Mem.mem_free |> Mem.get_mem_value |> Util.kb_string_to_mb)
+          (Mem.mem_total |> Mem.get_mem_value |> Util.kb_string_to_mb) )
+  ; field conf.show_cpu (fun () ->
+        Printf.sprintf "CPU\t%d%%" (int_of_float (Cpu.cpu_usage ())) )
+  ; field conf.show_disk (fun () ->
+        Printf.sprintf "DISK\t%d/%d GB" Disk.disk_used Disk.disk_total )
+  ; field conf.show_packages (fun () ->
+        Printf.sprintf "PACMAN\t%d" (Packages.pacman_count ()) )
+  ; field conf.show_shell (fun () ->
+        Printf.sprintf "SHELL\t%s" (Shell.get_shell ()) )
+  ; field conf.show_uptime (fun () ->
+        Printf.sprintf "UPTIME\t%d:%d" hours minutes )
+  ; field conf.show_ocaml (fun () ->
+        Printf.sprintf "OCAML\t%s" Ocaml.ocaml_version )
+  ; field conf.show_palette (fun () ->
+        Printf.sprintf "%s" (Palette.palette "*") ) ]
 
 let fields = List.filter (fun s -> s <> "") fields
 
