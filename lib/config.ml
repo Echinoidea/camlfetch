@@ -12,6 +12,8 @@ type t =
   ; show_terminal: bool
   ; show_cpu: bool
   ; show_gpu: bool
+  ; show_ocaml: bool
+  ; show_palette: bool
   ; show_memory: bool
   ; show_disk: bool
   ; cpu_usage: bool
@@ -34,6 +36,8 @@ let default =
   ; show_terminal= true
   ; show_cpu= true
   ; show_gpu= true
+  ; show_ocaml= true
+  ; show_palette= true
   ; show_memory= true
   ; show_disk= true
   ; cpu_usage= false

@@ -1,7 +1,7 @@
 ((show_os true)
  (show_kernel true)
  (show_uptime true)
- (show_packages true)
+ (show_packages false)
  (show_shell true)
  (show_resolution false)
  (show_de true)
