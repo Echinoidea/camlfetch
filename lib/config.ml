@@ -16,7 +16,7 @@ type t =
   ; show_palette: bool
   ; show_memory: bool
   ; show_disk: bool
-  ; cpu_usage: bool
+  ; show_ip: bool
   ; memory_percentage: bool
   ; ascii_art: string
   ; ascii_art_color: string
@@ -40,7 +40,7 @@ let default =
   ; show_palette= true
   ; show_memory= true
   ; show_disk= true
-  ; cpu_usage= false
+  ; show_ip= true
   ; memory_percentage= false
   ; ascii_art= "auto"
   ; ascii_art_color= "blue"

@@ -39,6 +39,8 @@ let fields =
         Printf.sprintf "CPU\t%d%%" (int_of_float (Cpu.cpu_usage ())) )
   ; field conf.show_disk (fun () ->
         Printf.sprintf "DISK\t%d/%d GB" Disk.disk_used Disk.disk_total )
+  ; field conf.show_ip (fun () ->
+        Printf.sprintf "IP\t%s" (Ip.get_host_ip_addr ()) )
   ; field conf.show_packages (fun () ->
         Printf.sprintf "PACMAN\t%d" (Packages.pacman_count ()) )
   ; field conf.show_shell (fun () ->
