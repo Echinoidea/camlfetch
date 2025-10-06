@@ -7,6 +7,7 @@ type module_item =
   | Packages
   | Shell
   | Cpu
+  | Gpu
   | Ocaml
   | Palette
   | Memory
@@ -32,6 +33,7 @@ let default =
       ; Packages
       ; Shell
       ; Cpu
+      ; Gpu
       ; Ocaml
       ; MemPercent
       ; Disk

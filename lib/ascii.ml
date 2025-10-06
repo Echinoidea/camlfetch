@@ -18,9 +18,18 @@ let pad_lines l1 l2 =
 
 let print_concat_art_sysinfo art_lines art_color_name sysinfo_lines
     sysinfo_color_name =
+  (* Colors *)
   let art_color = Util.get_color art_color_name in
   let sysinfo_color = Util.get_color sysinfo_color_name in
-  let l1, l2 = pad_lines art_lines sysinfo_lines in
+  (* Calculate sysinfo width and truncate *)
+  let term_width = Util.get_terminal_width () in
+  let padding = 2 in
+  let art_width = List.nth art_lines 0 |> String.length in
+  let available_width = term_width - art_width - padding in
+  let truncated_sysinfo =
+    List.map (Util.truncate_string available_width) sysinfo_lines
+  in
+  let l1, l2 = pad_lines art_lines truncated_sysinfo in
   List.iter2
     (fun s1 s2 ->
       let colored_s1 = CPrintf.csprintf art_color "%s" s1 in

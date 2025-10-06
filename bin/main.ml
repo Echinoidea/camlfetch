@@ -21,7 +21,6 @@ let art =
     | path ->
         path )
 
-(* Build fields list based on module_order *)
 let fields =
   List.filter_map
     (fun item ->
@@ -48,6 +47,8 @@ let fields =
                (Mem.mem_total |> Mem.get_mem_value |> Util.kb_string_to_mb) )
       | Config.Cpu ->
           Some (Printf.sprintf "CPU\t%d%%" (int_of_float (Cpu.cpu_usage ())))
+      | Config.Gpu ->
+          Some (Printf.sprintf "GPU\t%s" (Gpu.gpu_device_name ()))
       | Config.MemPercent ->
           Some (Printf.sprintf "MEM\t%d%%" (int_of_float Mem.mem_percent))
       | Config.Disk ->
