@@ -15,12 +15,14 @@ type t =
   ; show_ocaml: bool
   ; show_palette: bool
   ; show_memory: bool
+  ; show_mem_percent: bool
   ; show_disk: bool
   ; show_ip: bool
   ; memory_percentage: bool
   ; ascii_art: string
   ; ascii_art_color: string
-  ; sysinfo_color: string }
+  ; sysinfo_color: string
+  ; palette_string: string }
 [@@deriving sexp]
 
 (* Default configuration *)
@@ -38,13 +40,15 @@ let default =
   ; show_gpu= true
   ; show_ocaml= true
   ; show_palette= true
-  ; show_memory= true
+  ; show_memory= false
+  ; show_mem_percent= true
   ; show_disk= true
   ; show_ip= true
   ; memory_percentage= false
   ; ascii_art= "auto"
   ; ascii_art_color= "blue"
-  ; sysinfo_color= "white" }
+  ; sysinfo_color= "white"
+  ; palette_string= "*" }
 
 let load_from_file filename =
   try

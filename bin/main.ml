@@ -6,13 +6,9 @@ let conf =
   with
   | Ok cfg ->
       cfg
-  | Error (`File_error msg) ->
-      Printf.eprintf "Warning: Could not read config file: %s\n%!" msg ;
-      Printf.eprintf "Using default configuration\n%!" ;
+  | Error (`File_error _msg) ->
       Config.default
-  | Error (`Parse_error msg) ->
-      Printf.eprintf "Warning: Could not parse config file: %s\n%!" msg ;
-      Printf.eprintf "Using default configuration\n%!" ;
+  | Error (`Parse_error _msg) ->
       Config.default
 
 let art =
@@ -33,8 +29,10 @@ let hours, minutes, _seconds = Uptime.get_uptime ()
 let fields =
   [ field conf.show_memory (fun () ->
         Printf.sprintf "MEM\t%d / %d MB"
-          (Mem.mem_free |> Mem.get_mem_value |> Util.kb_string_to_mb)
+          (Mem.mem_used |> Util.kb_to_mb)
           (Mem.mem_total |> Mem.get_mem_value |> Util.kb_string_to_mb) )
+  ; field conf.show_mem_percent (fun () ->
+        Printf.sprintf "MEM\t%d%%" (int_of_float Mem.mem_percent) )
   ; field conf.show_cpu (fun () ->
         Printf.sprintf "CPU\t%d%%" (int_of_float (Cpu.cpu_usage ())) )
   ; field conf.show_disk (fun () ->
@@ -50,7 +48,7 @@ let fields =
   ; field conf.show_ocaml (fun () ->
         Printf.sprintf "OCAML\t%s" Ocaml.ocaml_version )
   ; field conf.show_palette (fun () ->
-        Printf.sprintf "%s" (Palette.palette "*") ) ]
+        Printf.sprintf "%s" (Palette.palette conf.palette_string) ) ]
 
 let fields = List.filter (fun s -> s <> "") fields
 

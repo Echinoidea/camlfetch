@@ -8,5 +8,5 @@ let colors =
   ; ("white", CPrintf.white) ]
 
 let palette character =
-  List.map (fun (_, color) -> CPrintf.csprintf color character) colors
+  List.map (fun (_, color) -> CPrintf.csprintf color "%s" character) colors
   |> String.concat " "
