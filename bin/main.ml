@@ -7,8 +7,10 @@ let conf =
   | Ok cfg ->
       cfg
   | Error (`File_error _msg) ->
+      Printf.eprintf "Error loading config" ;
       Config.default
   | Error (`Parse_error _msg) ->
+      Printf.eprintf "Error loading config" ;
       Config.default
 
 let art =
@@ -19,42 +21,41 @@ let art =
     | path ->
         path )
 
-(*function that takes a bool from conf, a field title, a field v
-all potential fields, and only return a string with content if cfg_includes *)
-let field cfg_includes lazy_formatted_string =
-  if cfg_includes then lazy_formatted_string () else ""
-
-let hours, minutes, _seconds = Uptime.get_uptime ()
-
+(* Build fields list based on module_order *)
 let fields =
-  [ field conf.show_memory (fun () ->
-        Printf.sprintf "MEM\t%d / %d MB"
-          (Mem.mem_used |> Util.kb_to_mb)
-          (Mem.mem_total |> Mem.get_mem_value |> Util.kb_string_to_mb) )
-  ; field conf.show_mem_percent (fun () ->
-        Printf.sprintf "MEM\t%d%%" (int_of_float Mem.mem_percent) )
-  ; field conf.show_cpu (fun () ->
-        Printf.sprintf "CPU\t%d%%" (int_of_float (Cpu.cpu_usage ())) )
-  ; field conf.show_disk (fun () ->
-        Printf.sprintf "DISK\t%d/%d GB" Disk.disk_used Disk.disk_total )
-  ; field conf.show_ip (fun () ->
-        Printf.sprintf "IP\t%s" (Ip.get_host_ip_addr ()) )
-  ; field conf.show_packages (fun () ->
-        Printf.sprintf "PACMAN\t%d" (Packages.pacman_count ()) )
-  ; field conf.show_shell (fun () ->
-        Printf.sprintf "SHELL\t%s" (Shell.get_shell ()) )
-  ; field conf.show_uptime (fun () ->
-        Printf.sprintf "UPTIME\t%d:%d" hours minutes )
-  ; field conf.show_ocaml (fun () ->
-        Printf.sprintf "OCAML\t%s" Ocaml.ocaml_version )
-  ; field conf.show_palette (fun () ->
-        Printf.sprintf "%s" (Palette.palette conf.palette_string) ) ]
-
-let fields = List.filter (fun s -> s <> "") fields
-
-let sysinfo_s = String.concat "\n" fields
+  List.filter_map
+    (fun item ->
+      match item with
+      | Config.Os ->
+          Some (Printf.sprintf "OS\t%s" (Linux.get_os ()))
+      | Config.Kernel ->
+          Some (Printf.sprintf "KERNEL\t%s" (Linux.get_kernel ()))
+      | Config.Uptime ->
+          let hours, minutes, _seconds = Uptime.get_uptime () in
+          Some (Printf.sprintf "UPTIME\t%d:%d" hours minutes)
+      | Config.Packages ->
+          Some (Printf.sprintf "PACMAN\t%d" (Packages.pacman_count ()))
+      | Config.Shell ->
+          Some (Printf.sprintf "SHELL\t%s" (Shell.get_shell ()))
+      | Config.Ocaml ->
+          Some (Printf.sprintf "OCAML\t%s" Ocaml.ocaml_version)
+      | Config.Palette ->
+          Some (Printf.sprintf "%s" (Palette.palette conf.palette_string))
+      | Config.Memory ->
+          Some
+            (Printf.sprintf "MEM\t%d / %d MB"
+               (Mem.mem_used |> Util.kb_to_mb)
+               (Mem.mem_total |> Mem.get_mem_value |> Util.kb_string_to_mb) )
+      | Config.Cpu ->
+          Some (Printf.sprintf "CPU\t%d%%" (int_of_float (Cpu.cpu_usage ())))
+      | Config.MemPercent ->
+          Some (Printf.sprintf "MEM\t%d%%" (int_of_float Mem.mem_percent))
+      | Config.Disk ->
+          Some (Printf.sprintf "DISK\t%d/%d GB" Disk.disk_used Disk.disk_total)
+      | Config.Ip ->
+          Some (Printf.sprintf "IP\t%s" (Ip.get_host_ip_addr ())) )
+    conf.module_order
 
 let () =
-  Ascii.print_concat_art_sysinfo art conf.ascii_art_color
-    (String.split_on_char '\n' sysinfo_s)
+  Ascii.print_concat_art_sysinfo art conf.ascii_art_color fields
     conf.sysinfo_color

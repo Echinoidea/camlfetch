@@ -1,23 +1,22 @@
 open Sexplib.Std
 
+type module_item =
+  | Os
+  | Kernel
+  | Uptime
+  | Packages
+  | Shell
+  | Cpu
+  | Ocaml
+  | Palette
+  | Memory
+  | MemPercent
+  | Disk
+  | Ip
+[@@deriving sexp]
+
 type t =
-  { show_os: bool
-  ; show_kernel: bool
-  ; show_uptime: bool
-  ; show_packages: bool
-  ; show_shell: bool
-  ; show_resolution: bool
-  ; show_de: bool
-  ; show_wm: bool
-  ; show_terminal: bool
-  ; show_cpu: bool
-  ; show_gpu: bool
-  ; show_ocaml: bool
-  ; show_palette: bool
-  ; show_memory: bool
-  ; show_mem_percent: bool
-  ; show_disk: bool
-  ; show_ip: bool
+  { module_order: module_item list
   ; memory_percentage: bool
   ; ascii_art: string
   ; ascii_art_color: string
@@ -25,25 +24,19 @@ type t =
   ; palette_string: string }
 [@@deriving sexp]
 
-(* Default configuration *)
 let default =
-  { show_os= true
-  ; show_kernel= true
-  ; show_uptime= true
-  ; show_packages= true
-  ; show_shell= true
-  ; show_resolution= true
-  ; show_de= true
-  ; show_wm= true
-  ; show_terminal= true
-  ; show_cpu= true
-  ; show_gpu= true
-  ; show_ocaml= true
-  ; show_palette= true
-  ; show_memory= false
-  ; show_mem_percent= true
-  ; show_disk= true
-  ; show_ip= true
+  { module_order=
+      [ Os
+      ; Kernel
+      ; Uptime
+      ; Packages
+      ; Shell
+      ; Cpu
+      ; Ocaml
+      ; MemPercent
+      ; Disk
+      ; Ip
+      ; Palette ]
   ; memory_percentage= false
   ; ascii_art= "auto"
   ; ascii_art_color= "blue"
@@ -59,3 +52,5 @@ let load_from_file filename =
       Error (`File_error msg)
   | Sexplib.Conv.Of_sexp_error (exc, _) ->
       Error (`Parse_error (Printexc.to_string exc))
+
+let should_display conf item = List.mem item conf.module_order
