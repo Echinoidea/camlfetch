@@ -16,7 +16,7 @@ type module_item =
   | Disk
   | Ip
   | Sep
-[@@deriving sexp]
+[@@deriving sexp] [@@warning "-37"]
 
 type t =
   { module_order: module_item list

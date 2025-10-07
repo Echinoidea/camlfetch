@@ -14,6 +14,9 @@ let conf =
       Printf.eprintf "Error loading config" ;
       Config.default
 
+(* Attempt to load cache, if fail, generate info and write to cache *)
+let cache = Cache.get_or_create ()
+
 let art =
   Ascii.read_art
     ( match conf.ascii_art with
@@ -26,12 +29,25 @@ let fields =
   List.filter_map
     (fun item ->
       match item with
+      (* Static fields loaded from cache *)
       | Config.Hostname ->
-          Some (Printf.sprintf "\t\t%s" Hostname.hostname)
+          Some (Printf.sprintf "%s" cache.hostname)
+      | Config.Os ->
+          Some (Printf.sprintf "OS\t%s" cache.os)
+      | Config.Cpu ->
+          Some (Printf.sprintf "CPU\t%s" cache.cpu)
+      | Config.Gpu ->
+          Some (Printf.sprintf "GPU\t%s" cache.gpu)
+      | Config.Memory ->
+          Some
+            (Printf.sprintf "MEM\t%d / %d MB"
+               (Mem.mem_used |> Util.kb_to_mb)
+               (cache.memory_total |> Util.kb_string_to_mb) )
+      | Config.Disk ->
+          Some (Printf.sprintf "DISK\t%d/%s GB" Disk.disk_used cache.disk_total)
+      (* Dynamic fields generated at runtime *)
       | Config.Sep ->
           Some (Printf.sprintf "")
-      | Config.Os ->
-          Some (Printf.sprintf "OS\t%s" (Linux.get_os ()))
       | Config.Kernel ->
           Some (Printf.sprintf "KERNEL\t%s" (Linux.get_kernel ()))
       | Config.Uptime ->
@@ -45,19 +61,8 @@ let fields =
           Some (Printf.sprintf "OCAML\t%s" Ocaml.ocaml_version)
       | Config.Palette ->
           Some (Printf.sprintf "%s" (Palette.palette conf.palette_string))
-      | Config.Memory ->
-          Some
-            (Printf.sprintf "MEM\t%d / %d MB"
-               (Mem.mem_used |> Util.kb_to_mb)
-               (Mem.mem_total |> Mem.get_mem_value |> Util.kb_string_to_mb) )
-      | Config.Cpu ->
-          Some (Printf.sprintf "CPU\t%d%%" (int_of_float (Cpu.cpu_usage ())))
-      | Config.Gpu ->
-          Some (Printf.sprintf "GPU\t%s" (Gpu.gpu_device_name ()))
       | Config.MemPercent ->
           Some (Printf.sprintf "MEM\t%d%%" (int_of_float Mem.mem_percent))
-      | Config.Disk ->
-          Some (Printf.sprintf "DISK\t%d/%d GB" Disk.disk_used Disk.disk_total)
       | Config.Ip ->
           Some (Printf.sprintf "IP\t%s" (Ip.get_host_ip_addr ())) )
     conf.module_order
@@ -66,12 +71,12 @@ let () =
   Ascii.print_concat_art_sysinfo art conf.ascii_art_color fields
     conf.sysinfo_color conf.truncate_padding
 
-(* TODO: Cache constant sysinfo data like OS, login, hostname, device model names, and whatever else i can think of in a sexp file. Create the file first run, read sexp file a single time *)
+(* DONE: Cache constant sysinfo data like OS, login, hostname, device model names, and whatever else i can think of in a sexp file. Create the file first run, read sexp file a single time *)
 (* on further executions and get all info at once *)
 (* TODO: Remove all Unix process calls and only read from files if possible. tput may be the only exception *)
-(* TODO: Add truncate terminal padding to config because terminals can have their own padding idk *)
+(* DONE: Add truncate terminal padding to config because terminals can have their own padding idk *)
 (* TODO: Make different colors for module name and module info *)
 (* TODO: Make config parse paths starting with "~/" as Unix.getenv "HOME" *)
-(* TODO: Better truncating, paricularly for long lines like device names, *)
+(* DONE: Better truncating, paricularly for long lines like device names, *)
 (* currently really inconsistent *)
 (* TODO: Ascii art justification start center end *)

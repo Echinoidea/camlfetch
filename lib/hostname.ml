@@ -5,4 +5,4 @@ let hostname =
   let hostname =
     CPrintf.csprintf CPrintf.blue "%s" (Unix.gethostname () |> String.trim)
   in
-  String.concat "@" [login; hostname]
+  login ^ "@" ^ hostname

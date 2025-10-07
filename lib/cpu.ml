@@ -19,3 +19,23 @@ let cpu_usage () =
   Unix.sleepf 0.5 ;
   let times2 = read_cpu_vals () in
   calculate_cpu_usage times1 times2
+
+let cpu_model_name () =
+  try
+    let ic = open_in "/proc/cpuinfo" in
+    let rec find_model () =
+      match input_line ic with
+      | line when String.starts_with ~prefix:"model name" line -> (
+          close_in ic ;
+          match String.split_on_char ':' line with
+          | _ :: name :: _ ->
+              String.trim name
+          | _ ->
+              "Unknown CPU" )
+      | _ ->
+          find_model ()
+      | exception End_of_file ->
+          close_in ic ; "Unknown CPU"
+    in
+    find_model ()
+  with _ -> "Unknown CPU"
