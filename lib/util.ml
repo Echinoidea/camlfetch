@@ -11,6 +11,8 @@ let kb_string_to_mb v =
 
 let kb_to_mb v = int_of_float v / 1024
 
+let mb_to_gb v = v / 1024
+
 let get_color name =
   match List.assoc_opt name CPrintf.colors with
   | Some color ->

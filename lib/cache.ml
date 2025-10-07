@@ -30,7 +30,7 @@ let read_cache () =
   with _ -> None
 
 let build_cache () =
-  { hostname= Hostname.hostname |> Util.strip_color
+  { hostname= Hostname.get_user_host ()
   ; os= Linux.get_os ()
   ; cpu= Cpu.cpu_model_name ()
   ; gpu= Gpu.gpu_device_name ()

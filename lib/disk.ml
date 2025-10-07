@@ -15,4 +15,6 @@ let disk_space path =
   | _ ->
       failwith "Failed to parse df"
 
+let get_disk_usage = (Unix.stat (Unix.getenv "HOME")).st_size / 10
+
 let disk_total, disk_used, disk_available = disk_space "/home/gabriel/"
