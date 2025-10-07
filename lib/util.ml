@@ -26,10 +26,23 @@ let get_terminal_width () =
     width
   with _ -> 80
 
-let truncate_string max_width str =
+let utf8_length str =
   let len = String.length str in
-  if max_width < 4 then
-    (* Terminal too narrow, just return empty or first char *)
-    if max_width > 0 then String.sub str 0 1 else ""
-  else if len > max_width then String.sub str 0 (max_width - 3) ^ "..."
-  else str
+  let rec count pos chars =
+    if pos >= len then chars
+    else
+      let c = Char.code str.[pos] in
+      let next_pos =
+        if c < 0x80 then pos + 1 (* ASCII *)
+        else if c < 0xE0 then pos + 2 (* 2-byte *)
+        else if c < 0xF0 then pos + 3 (* 3-byte *)
+        else pos + 4 (* 4-byte *)
+      in
+      count next_pos (chars + 1)
+  in
+  count 0 0
+
+let truncate_string max_width str =
+  if max_width > String.length str then str
+  else if max_width < 1 then "X"
+  else String.sub str 0 max_width

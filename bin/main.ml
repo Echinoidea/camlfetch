@@ -25,6 +25,10 @@ let fields =
   List.filter_map
     (fun item ->
       match item with
+      | Config.Hostname ->
+          Some (Printf.sprintf "\t%s" Hostname.hostname)
+      | Config.Sep ->
+          Some (Printf.sprintf "")
       | Config.Os ->
           Some (Printf.sprintf "OS\t%s" (Linux.get_os ()))
       | Config.Kernel ->
@@ -60,3 +64,8 @@ let fields =
 let () =
   Ascii.print_concat_art_sysinfo art conf.ascii_art_color fields
     conf.sysinfo_color
+
+(* TODO: Cache constant sysinfo data like OS, hostname, and whatever else i can think of in a sexp file. Create the file first run, read sexp file a single time *)
+(* on further executions and get all info at once *)
+(* TODO: Remove all Unix process calls and only read from files if possible. tput may be the only exception *)
+(* TODO: Add truncate terminal padding to config because terminals can have their own padding idk *)

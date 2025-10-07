@@ -1,6 +1,7 @@
 open Sexplib.Std
 
 type module_item =
+  | Hostname
   | Os
   | Kernel
   | Uptime
@@ -14,6 +15,7 @@ type module_item =
   | MemPercent
   | Disk
   | Ip
+  | Sep
 [@@deriving sexp]
 
 type t =
@@ -27,7 +29,9 @@ type t =
 
 let default =
   { module_order=
-      [ Os
+      [ Hostname
+      ; Sep
+      ; Os
       ; Kernel
       ; Uptime
       ; Packages
