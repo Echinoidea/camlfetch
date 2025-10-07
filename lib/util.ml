@@ -19,12 +19,7 @@ let get_color name =
       CPrintf.white
 
 let get_terminal_width () =
-  try
-    let ic = Unix.open_process_in "tput cols" in
-    let width = input_line ic |> int_of_string in
-    let _ = Unix.close_process_in ic in
-    width
-  with _ -> 80
+  try int_of_string (Unix.getenv "COLUMNS") with _ -> 80
 
 let strip_color str =
   let escape_regex = Str.regexp "\027\\[[0-9;]*m" in
