@@ -2,7 +2,8 @@ open Camlfetch
 
 let conf =
   match
-    Config.load_from_file "/home/gabriel/.config/camlfetch/camlfetch.sexp"
+    Config.load_from_file
+      (Unix.getenv "HOME" ^ "/.config/camlfetch/camlfetch.sexp")
   with
   | Ok cfg ->
       cfg
@@ -17,7 +18,7 @@ let art =
   Ascii.read_art
     ( match conf.ascii_art with
     | "auto" ->
-        "/home/gabriel/.local/share/fastfetch/ascii/arch.txt"
+        Unix.getenv "HOME" ^ "/.config/camlfetch/art/arch"
     | path ->
         path )
 
@@ -65,7 +66,7 @@ let () =
   Ascii.print_concat_art_sysinfo art conf.ascii_art_color fields
     conf.sysinfo_color conf.truncate_padding
 
-(* TODO: Cache constant sysinfo data like OS, hostname, and whatever else i can think of in a sexp file. Create the file first run, read sexp file a single time *)
+(* TODO: Cache constant sysinfo data like OS, login, hostname, and whatever else i can think of in a sexp file. Create the file first run, read sexp file a single time *)
 (* on further executions and get all info at once *)
 (* TODO: Remove all Unix process calls and only read from files if possible. tput may be the only exception *)
 (* TODO: Add truncate terminal padding to config because terminals can have their own padding idk *)
