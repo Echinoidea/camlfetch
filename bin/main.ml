@@ -74,3 +74,4 @@ let () =
 (* TODO: Make config parse paths starting with "~/" as Unix.getenv "HOME" *)
 (* TODO: Better truncating, paricularly for long lines like device names, *)
 (* currently really inconsistent *)
+(* TODO: Ascii art justification start center end *)

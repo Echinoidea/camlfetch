@@ -12,6 +12,7 @@ let pad_lines l1 l2 =
   | 0 ->
       (l1, l2)
   | n when n > 0 ->
+      (* NOTE: forgot what this does *)
       (l1, l2 @ List.init diff (fun _ -> ""))
   | _ ->
       (l1 @ List.init diff (fun _ -> ""), l2)
@@ -24,18 +25,29 @@ let print_concat_art_sysinfo art_lines art_color_name sysinfo_lines
   (* Calculate sysinfo width and truncate *)
   let term_width = Util.get_terminal_width () in
   let padding = truncate_padding in
-  let _art_width =
-    List.nth art_lines 0 |> Util.strip_color |> Util.utf8_length
+  (* recursive function that gets the longest line in the art*)
+  let art_width =
+    let rec find_longest lines max_len =
+      match lines with
+      | [] ->
+          max_len
+      | line :: rest ->
+          let len = line |> Util.strip_color |> Util.utf8_length in
+          find_longest rest (max max_len len)
+    in
+    find_longest art_lines 0
   in
   (* truncate *)
-  let available_width = term_width - 30 - padding in
+  let available_width = term_width - art_width - padding in
   let truncated_sysinfo =
     List.map (Util.truncate_string available_width) sysinfo_lines
   in
   let l1, l2 = pad_lines art_lines truncated_sysinfo in
   List.iter2
     (fun s1 s2 ->
-      let colored_s1 = CPrintf.csprintf art_color "%s" s1 in
+      (* Pad the plain string first, then apply color *)
+      let padded_s1 = Printf.sprintf "%-*s" art_width s1 in
+      let colored_s1 = CPrintf.csprintf art_color "%s" padded_s1 in
       let colored_s2 = CPrintf.csprintf sysinfo_color "%s" s2 in
-      Printf.printf "%-30s  %s\n" colored_s1 colored_s2 )
+      Printf.printf "%s  %s\n" colored_s1 colored_s2 )
     l1 l2

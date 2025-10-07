@@ -46,6 +46,15 @@ let utf8_length str =
   in
   count 0 0
 
+let rec longest_line_length lines longest =
+  match lines with
+  | [] ->
+      longest
+  | line :: rest ->
+      let length = line |> strip_color |> utf8_length in
+      let new_longest = if length > longest then length else longest in
+      longest_line_length rest new_longest
+
 let truncate_string max_width str =
   if max_width > String.length (strip_color str) then str
   else if max_width < 1 then "X"
