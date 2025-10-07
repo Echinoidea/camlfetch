@@ -51,6 +51,9 @@ let default =
   ; palette_string= "*"
   ; truncate_padding= 16 }
 
+(* TODO: Make paths starting with "~/" parse as Unix.getenv "HOME". Make a path type that path elements use, *)
+(* have custom parse function for path types *)
+
 let load_from_file filename =
   try
     let sexp = Sexplib.Sexp.load_sexp filename in

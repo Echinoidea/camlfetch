@@ -27,7 +27,7 @@ let fields =
     (fun item ->
       match item with
       | Config.Hostname ->
-          Some (Printf.sprintf "\t%s" Hostname.hostname)
+          Some (Printf.sprintf "\t\t%s" Hostname.hostname)
       | Config.Sep ->
           Some (Printf.sprintf "")
       | Config.Os ->
@@ -66,7 +66,11 @@ let () =
   Ascii.print_concat_art_sysinfo art conf.ascii_art_color fields
     conf.sysinfo_color conf.truncate_padding
 
-(* TODO: Cache constant sysinfo data like OS, login, hostname, and whatever else i can think of in a sexp file. Create the file first run, read sexp file a single time *)
+(* TODO: Cache constant sysinfo data like OS, login, hostname, device model names, and whatever else i can think of in a sexp file. Create the file first run, read sexp file a single time *)
 (* on further executions and get all info at once *)
 (* TODO: Remove all Unix process calls and only read from files if possible. tput may be the only exception *)
 (* TODO: Add truncate terminal padding to config because terminals can have their own padding idk *)
+(* TODO: Make different colors for module name and module info *)
+(* TODO: Make config parse paths starting with "~/" as Unix.getenv "HOME" *)
+(* TODO: Better truncating, paricularly for long lines like device names, *)
+(* currently really inconsistent *)

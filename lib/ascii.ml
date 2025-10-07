@@ -24,10 +24,11 @@ let print_concat_art_sysinfo art_lines art_color_name sysinfo_lines
   (* Calculate sysinfo width and truncate *)
   let term_width = Util.get_terminal_width () in
   let padding = truncate_padding in
-  let art_width =
+  let _art_width =
     List.nth art_lines 0 |> Util.strip_color |> Util.utf8_length
   in
-  let available_width = term_width - art_width - padding in
+  (* truncate *)
+  let available_width = term_width - 30 - padding in
   let truncated_sysinfo =
     List.map (Util.truncate_string available_width) sysinfo_lines
   in
