@@ -24,7 +24,9 @@ let print_concat_art_sysinfo art_lines art_color_name sysinfo_lines
   (* Calculate sysinfo width and truncate *)
   let term_width = Util.get_terminal_width () in
   let padding = 4 in
-  let art_width = List.nth art_lines 0 |> Util.utf8_length in
+  let art_width =
+    List.nth art_lines 0 |> Util.strip_color |> Util.utf8_length
+  in
   (* Printf.printf *)
   (*   "term_width = %d | art_width = %d | padding = %d | available_width = %d\n" *)
   (*   term_width art_width padding *)

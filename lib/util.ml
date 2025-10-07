@@ -26,6 +26,10 @@ let get_terminal_width () =
     width
   with _ -> 80
 
+let strip_color str =
+  let escape_regex = Str.regexp "\027\\[[0-9;]*m" in
+  Str.global_replace escape_regex "" str
+
 let utf8_length str =
   let len = String.length str in
   let rec count pos chars =
@@ -43,6 +47,6 @@ let utf8_length str =
   count 0 0
 
 let truncate_string max_width str =
-  if max_width > String.length str then str
+  if max_width > String.length (strip_color str) then str
   else if max_width < 1 then "X"
   else String.sub str 0 max_width
