@@ -24,7 +24,8 @@ type t =
   ; ascii_art: string
   ; ascii_art_color: string
   ; sysinfo_color: string
-  ; palette_string: string }
+  ; palette_string: string
+  ; truncate_padding: int }
 [@@deriving sexp]
 
 let default =
@@ -47,7 +48,8 @@ let default =
   ; ascii_art= "auto"
   ; ascii_art_color= "blue"
   ; sysinfo_color= "white"
-  ; palette_string= "*" }
+  ; palette_string= "*"
+  ; truncate_padding= 16 }
 
 let load_from_file filename =
   try

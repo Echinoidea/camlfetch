@@ -17,20 +17,16 @@ let pad_lines l1 l2 =
       (l1 @ List.init diff (fun _ -> ""), l2)
 
 let print_concat_art_sysinfo art_lines art_color_name sysinfo_lines
-    sysinfo_color_name =
+    sysinfo_color_name truncate_padding =
   (* Colors *)
   let art_color = Util.get_color art_color_name in
   let sysinfo_color = Util.get_color sysinfo_color_name in
   (* Calculate sysinfo width and truncate *)
   let term_width = Util.get_terminal_width () in
-  let padding = 4 in
+  let padding = truncate_padding in
   let art_width =
     List.nth art_lines 0 |> Util.strip_color |> Util.utf8_length
   in
-  (* Printf.printf *)
-  (*   "term_width = %d | art_width = %d | padding = %d | available_width = %d\n" *)
-  (*   term_width art_width padding *)
-  (*   (term_width - art_width - padding) ; *)
   let available_width = term_width - art_width - padding in
   let truncated_sysinfo =
     List.map (Util.truncate_string available_width) sysinfo_lines

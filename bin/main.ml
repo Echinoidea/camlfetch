@@ -63,7 +63,7 @@ let fields =
 
 let () =
   Ascii.print_concat_art_sysinfo art conf.ascii_art_color fields
-    conf.sysinfo_color
+    conf.sysinfo_color conf.truncate_padding
 
 (* TODO: Cache constant sysinfo data like OS, hostname, and whatever else i can think of in a sexp file. Create the file first run, read sexp file a single time *)
 (* on further executions and get all info at once *)
